@@ -32,18 +32,18 @@ public class WorkspaceManagement {
     }
 
     public void removeSpace(int id) {
+        CoworkingSpace space = entityManager.find(CoworkingSpace.class, id);
+        if (space == null) {
+            System.out.println("Coworking space with ID " + id + " not found.");
+            return;
+        }
+
         EntityTransaction entityTransaction = entityManager.getTransaction();
         try {
             entityTransaction.begin();
-
-            CoworkingSpace space = entityManager.find(CoworkingSpace.class, id);
-            if (space != null) {
-                entityManager.remove(space);
-            } else {
-                System.out.println("Coworking space with ID " + id + " not found.");
-            }
-
+            entityManager.remove(space);
             entityTransaction.commit();
+            System.out.println("Coworking space with ID " + id + " removed successfully.");
         } catch (Exception e) {
             if (entityTransaction.isActive()) {
                 entityTransaction.rollback();
@@ -52,21 +52,21 @@ public class WorkspaceManagement {
         }
     }
 
-    public void addUser(String name, String surname, String email, String userType) {
-        EntityTransaction entityTransaction = entityManager.getTransaction();
 
+    public void addUser(String name, String surname, String email, String userType) {
+        User user;
+        if ("Admin".equalsIgnoreCase(userType)) {
+            user = new Admin(name, surname, email);
+        } else if ("Customer".equalsIgnoreCase(userType)) {
+            user = new Customer(name, surname, email);
+        } else {
+            System.out.println("Invalid user type: " + userType);
+            return;
+        }
+
+        EntityTransaction entityTransaction = entityManager.getTransaction();
         try {
             entityTransaction.begin();
-            User user;
-            if ("Admin".equalsIgnoreCase(userType)) {
-                user = new Admin(name, surname, email);
-            } else if ("Customer".equalsIgnoreCase(userType)) {
-                user = new Customer(name, surname, email);
-            } else {
-                System.out.println("Invalid user type: " + userType);
-                throw new IllegalArgumentException("Invalid user type: " + userType);
-            }
-
             entityManager.persist(user);
             entityTransaction.commit();
         } catch (Exception e) {
@@ -94,7 +94,6 @@ public class WorkspaceManagement {
             return;
         }
 
-        // Открываем транзакцию только если все проверки пройдены
         EntityTransaction transaction = entityManager.getTransaction();
         try {
             transaction.begin();
@@ -115,7 +114,7 @@ public class WorkspaceManagement {
 
     public void customersBooking(int userId) {
         try {
-            // Запрос на получение всех бронирований пользователя
+
             TypedQuery<Booking> query = entityManager.createQuery(
                     "SELECT b FROM Booking b WHERE b.customer.id = :userId", Booking.class
             );
@@ -151,16 +150,15 @@ public class WorkspaceManagement {
 
 
     public void cancelBooking(int bookingId) {
-        EntityTransaction transaction = entityManager.getTransaction();
+        Booking booking = entityManager.find(Booking.class, bookingId);
+        if (booking == null) {
+            System.out.println("Booking ID " + bookingId + " not found");
+            return;
+        }
 
+        EntityTransaction transaction = entityManager.getTransaction();
         try {
             transaction.begin();
-            Booking booking = entityManager.find(Booking.class, bookingId);
-            if (booking == null) {
-                System.out.println("Booking ID " + bookingId + " not found");
-                return;
-            }
-
             CoworkingSpace coworkingSpace = booking.getCoworkingSpace();
             coworkingSpace.setAvailable(true);
             entityManager.merge(coworkingSpace);
