@@ -1,5 +1,9 @@
-import jakarta.persistence.*;
+package coworkingApp.entity;
 
+import jakarta.persistence.*;
+import org.springframework.stereotype.Component;
+
+@Component
 @Entity
 @Table(name = "coworking_space")
 public class CoworkingSpace {

@@ -1,6 +1,10 @@
+package coworkingApp.entity.user;
+
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
+import org.springframework.stereotype.Component;
 
+@Component
 @Entity
 @DiscriminatorValue("Customer")
 public class Customer extends User {

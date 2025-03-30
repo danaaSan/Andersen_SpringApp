@@ -71,7 +71,7 @@
             <version>6.4.0.Final</version>
         </dependency>
 
-        <!--JPA-->
+        <!--Spring-->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>

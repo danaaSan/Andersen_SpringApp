@@ -1,36 +1,38 @@
+package coworkingApp;
+
+import coworkingApp.entity.*;
+import coworkingApp.entity.user.Admin;
+import coworkingApp.entity.user.Customer;
+import coworkingApp.entity.user.User;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.io.*;
-import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
 
+@Repository
 public class WorkspaceManagement {
 
+    @PersistenceContext
     private EntityManager entityManager;
 
-    public WorkspaceManagement() {
-        entityManager = JPAUtil.getEntityManager();
-    }
 
+    @Transactional
     public void addCoworkingSpace( SpaceType type, double price){
-        EntityTransaction entityTransaction = entityManager.getTransaction();
         try {
-            entityTransaction.begin();
             entityManager.persist(new CoworkingSpace(price, type));
-            entityTransaction.commit();
         } catch (Exception e) {
-            if (entityTransaction.isActive()) {
-                entityTransaction.rollback();
-            }
-            e.printStackTrace(); // Логирование ошибки
+            e.printStackTrace();
         }
 
     }
 
+    @Transactional
     public void removeSpace(int id) {
         CoworkingSpace space = entityManager.find(CoworkingSpace.class, id);
         if (space == null) {
@@ -38,21 +40,16 @@ public class WorkspaceManagement {
             return;
         }
 
-        EntityTransaction entityTransaction = entityManager.getTransaction();
         try {
-            entityTransaction.begin();
             entityManager.remove(space);
-            entityTransaction.commit();
             System.out.println("Coworking space with ID " + id + " removed successfully.");
         } catch (Exception e) {
-            if (entityTransaction.isActive()) {
-                entityTransaction.rollback();
-            }
             e.printStackTrace(); // Логирование ошибки
         }
     }
 
 
+    @Transactional
     public void addUser(String name, String surname, String email, String userType) {
         User user;
         if ("Admin".equalsIgnoreCase(userType)) {
@@ -64,20 +61,14 @@ public class WorkspaceManagement {
             return;
         }
 
-        EntityTransaction entityTransaction = entityManager.getTransaction();
         try {
-            entityTransaction.begin();
             entityManager.persist(user);
-            entityTransaction.commit();
         } catch (Exception e) {
-            if (entityTransaction.isActive()) {
-                entityTransaction.rollback();
-            }
             e.printStackTrace();
         }
     }
 
-
+    @Transactional
     public void addBooking(int spaceId, int userId, LocalDate date, LocalTime time) {
         CoworkingSpace coworkingSpace = entityManager.find(CoworkingSpace.class, spaceId);
         if (coworkingSpace == null) {
@@ -94,19 +85,15 @@ public class WorkspaceManagement {
             return;
         }
 
-        EntityTransaction transaction = entityManager.getTransaction();
         try {
-            transaction.begin();
-            Booking booking = new Booking(coworkingSpace, user, date, time);
+            Booking booking = new Booking(coworkingSpace, user);
+            booking.setDate(date);
+            booking.setTime(time);
             entityManager.persist(booking);
             coworkingSpace.setAvailable(false);
             entityManager.merge(coworkingSpace);
-            transaction.commit();
             System.out.println("Success");
         } catch (Exception e) {
-            if (transaction.isActive()) {
-                transaction.rollback();
-            }
             e.printStackTrace();
         }
     }
@@ -143,12 +130,13 @@ public class WorkspaceManagement {
 
 
     public void availableSpacesInfo() {
-        entityManager.createQuery("SELECT c FROM CoworkingSpace c WHERE c.isAvailable = true", CoworkingSpace.class)
+        entityManager.createQuery("SELECT c FROM CoworkingSpace c WHERE c.isAvailable IS TRUE", CoworkingSpace.class)
                 .getResultList()
                 .forEach(System.out::println);
     }
 
 
+    @Transactional
     public void cancelBooking(int bookingId) {
         Booking booking = entityManager.find(Booking.class, bookingId);
         if (booking == null) {
@@ -156,21 +144,13 @@ public class WorkspaceManagement {
             return;
         }
 
-        EntityTransaction transaction = entityManager.getTransaction();
         try {
-            transaction.begin();
             CoworkingSpace coworkingSpace = booking.getCoworkingSpace();
             coworkingSpace.setAvailable(true);
             entityManager.merge(coworkingSpace);
-
             entityManager.remove(booking);
-
-            transaction.commit();
             System.out.println("Success");
         } catch (Exception e) {
-            if (transaction.isActive()) {
-                transaction.rollback();
-            }
             e.printStackTrace();
         }
     }

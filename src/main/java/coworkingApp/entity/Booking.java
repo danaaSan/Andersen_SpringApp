@@ -1,8 +1,16 @@
+package coworkingApp.entity;
 
+import coworkingApp.entity.user.User;
 import jakarta.persistence.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
+
+import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+@Component
 @Entity
 @Table(name = "booking")
 public class Booking {
@@ -28,10 +36,10 @@ public class Booking {
 
     public Booking() {}
 
-    public Booking(CoworkingSpace coworkingSpace, User customer, LocalDate date, LocalTime time) {
+    @Autowired
+    public Booking(CoworkingSpace coworkingSpace, @Qualifier("customer") User customer) {
         this.coworkingSpace = coworkingSpace;
         this.customer = customer;
-        this.date = date;
         this.time = time;
     }
 
@@ -39,12 +47,13 @@ public class Booking {
     public String toString() {
         return "Booking{" +
                 "bookingId=" + bookingId +
-                ", coworkingSpace=" + coworkingSpace.getSpaceId() +
-                ", customer=" + customer.getId() +
+                ", coworkingSpace=" + (coworkingSpace != null ? coworkingSpace.getSpaceId() : "null") +
+                ", customer=" + (customer != null ? customer.getId() : "null") +
                 ", date=" + date +
                 ", time=" + time +
                 '}';
     }
+
 
     // Геттеры и сеттеры
     public int getBookingId() { return bookingId; }

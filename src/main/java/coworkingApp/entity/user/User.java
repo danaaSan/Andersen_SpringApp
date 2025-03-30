@@ -1,6 +1,9 @@
+package coworkingApp.entity.user;
 
 import jakarta.persistence.*;
+import org.springframework.stereotype.Component;
 
+@Component
 @Entity
 @Table(name = "users")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE) // Наследование в одной таблице

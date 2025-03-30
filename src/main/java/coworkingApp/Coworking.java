@@ -1,3 +1,9 @@
+package coworkingApp;
+
+import coworkingApp.config.AppConfig;
+import coworkingApp.entity.SpaceType;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -7,7 +13,8 @@ import java.util.Scanner;
 
 public class Coworking {
     private static Scanner in = new Scanner(System.in);
-    private static WorkspaceManagement management = new WorkspaceManagement();
+    static ApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
+    static WorkspaceManagement management = context.getBean(WorkspaceManagement.class);
 
     public static void main(String[] args) throws SQLException {
         int choice;
@@ -61,20 +68,20 @@ public class Coworking {
 
     private static void addNewUser() {
         System.out.println("Enter name: ");
-        String name = in.nextLine();
+        String name = in.next();
         System.out.println("Enter surname: ");
-        String surname = in.nextLine();
+        String surname = in.next();
         System.out.println("Enter email: ");
-        String email = in.nextLine();
+        String email = in.next();
         System.out.println("Enter user type: ");
-        String userType= in.nextLine();
+        String userType= "in.next()";
         management.addUser(name, surname, email, userType);
     }
 
     private static void addCoworkingSpace() {
         System.out.println("Enter space Type: ");
         in.nextLine();
-        String type = in.nextLine();
+        String type = in.nextLine().toUpperCase();
         System.out.println("Enter Price: ");
         double price = in.nextDouble();
         management.addCoworkingSpace(SpaceType.valueOf(type), price);
