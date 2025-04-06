@@ -2,19 +2,24 @@ package coworkingApp;
 
 import coworkingApp.config.AppConfig;
 import coworkingApp.entity.SpaceType;
+import coworkingApp.service.BookingService;
+import coworkingApp.service.SpaceService;
+import coworkingApp.service.UserService;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Locale;
 import java.util.Scanner;
 
 public class Coworking {
     private static Scanner in = new Scanner(System.in);
     static ApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
-    static WorkspaceManagement management = context.getBean(WorkspaceManagement.class);
+    static SpaceService spaceService = context.getBean(SpaceService.class);
+    static UserService userService = context.getBean(UserService.class);
+    static BookingService bookingService = context.getBean(BookingService.class);
+
 
     public static void main(String[] args) throws SQLException {
         int choice;
@@ -57,8 +62,8 @@ public class Coworking {
             switch (adminChoice) {
                 case 1 -> addCoworkingSpace();
                 case 2 -> removeCoworkingSpace();
-                case 3 -> management.bookingInfo();
-                case 4 -> management.spacesInfo();
+                case 3 -> bookingService.getAllBookings();
+                case 4 -> spaceService.getAllSpaces();
                 case 5 -> addNewUser();
                 case 0 -> System.out.println("Returning to main menu...");
                 default -> System.out.println("Invalid choice! Please try again.");
@@ -74,8 +79,8 @@ public class Coworking {
         System.out.println("Enter email: ");
         String email = in.next();
         System.out.println("Enter user type: ");
-        String userType= "in.next()";
-        management.addUser(name, surname, email, userType);
+        String userType= in.next();
+        userService.addUser(name, surname, email, userType);
     }
 
     private static void addCoworkingSpace() {
@@ -84,13 +89,13 @@ public class Coworking {
         String type = in.nextLine().toUpperCase();
         System.out.println("Enter Price: ");
         double price = in.nextDouble();
-        management.addCoworkingSpace(SpaceType.valueOf(type), price);
+        spaceService.addCoworkingSpace(SpaceType.valueOf(type), price);
     }
 
     private static void removeCoworkingSpace()  {
         System.out.println("Enter space id: ");
         int spaceId = in.nextInt();
-        management.removeSpace(spaceId);
+        spaceService.removeSpace(spaceId);
     }
 
     private static void customerMenu() {
@@ -105,7 +110,7 @@ public class Coworking {
             customerChoice = in.nextInt();
 
             switch (customerChoice) {
-                case 1 -> management.availableSpacesInfo();
+                case 1 -> spaceService.getAvailableSpaces();
                 case 2 -> makeReservation();
                 case 3 -> viewMyReservations();
                 case 4 -> cancelReservation();
@@ -121,18 +126,18 @@ public class Coworking {
         int workspaceId = in.nextInt();
         LocalDate date = LocalDate.parse(in.next());
         LocalTime time = LocalTime.parse(in.next());
-        management.addBooking( workspaceId,userId, date, time);
+        bookingService.addBooking( workspaceId,userId, date, time);
     }
 
     private static void viewMyReservations() {
         System.out.println("Enter User Id");
         int userId = in.nextInt();
-        management.customersBooking(userId);
+        bookingService.getBookingsByUser(userId);
     }
 
     private static void cancelReservation() {
         System.out.println("Enter Reservation ID to Cancel:");
         int resId = in.nextInt();
-        management.cancelBooking(resId);
+        bookingService.cancelBooking(resId);
     }
 }
