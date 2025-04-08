@@ -7,6 +7,19 @@
     <groupId>org.example</groupId>
     <artifactId>Dana-sAndersonHomeWork</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <packaging>war</packaging>
+
+    <build>
+        <finalName>myapp</finalName> <!-- Это будет имя WAR-файла -->
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>3.3.1</version> <!-- или последнюю -->
+            </plugin>
+        </plugins>
+    </build>
+
 
     <properties>
         <maven.compiler.source>19</maven.compiler.source>

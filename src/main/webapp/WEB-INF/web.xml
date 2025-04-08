@@ -14,7 +14,7 @@
         </init-param>
         <init-param>
             <param-name>contextConfigLocation</param-name>
-            <param-value>identifier.config.MvcConfig</param-value>
+            <param-value>coworkingApp.config.MvcConfig</param-value>
         </init-param>
         <load-on-startup>1</load-on-startup>
     </servlet>
