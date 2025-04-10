@@ -1,3 +1,4 @@
+/*
 package coworkingApp;
 
 import coworkingApp.config.AppConfig;
@@ -141,3 +142,4 @@ public class Coworking {
         bookingService.cancelBooking(resId);
     }
 }
+*/

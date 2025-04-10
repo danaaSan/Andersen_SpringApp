@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Available Spaces</title>
+</head>
+<body>
+<h1>Available Spaces</h1>
+<table>
+  <thead>
+  <tr>
+    <th>ID</th>
+    <th>Type</th>
+    <th>Price</th>
+    <th>Availability</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="space : ${spaces}">
+    <td th:text="${space.spaceId}"></td>
+    <td th:text="${space.type}"></td>
+    <td th:text="${space.price}"></td>
+    <td th:text="${space.isAvailable ? 'Available' : 'Not Available'}"></td>
+  </tr>
+  </tbody>
+</table>
+<a th:href="@{/userMenu}">Back</a>
+</body>
+</html>

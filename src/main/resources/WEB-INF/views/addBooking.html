@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Add Booking</title>
+</head>
+<body>
+<h1>Add New Booking</h1>
+
+<!-- Success and Error Messages -->
+<div th:if="${successBooking}" style="color: green; font-weight: bold;" th:text="${successBooking}"></div>
+<div th:if="${errorBooking}" style="color: red; font-weight: bold;" th:text="${errorBooking}"></div>
+
+<form th:action="@{/addBooking}" th:object="${bookingInput}" method="post">
+  <label>Space ID:</label>
+  <input type="number" th:field="*{spaceId}" required />
+  <div th:if="${#fields.hasErrors('spaceId')}" th:errors="*{spaceId}" style="color: red;"></div><br>
+
+  <label>User ID:</label>
+  <input type="number" th:field="*{userId}" required />
+  <div th:if="${#fields.hasErrors('userId')}" th:errors="*{userId}" style="color: red;"></div><br>
+
+  <label>Date:</label>
+  <input type="date" th:field="*{date}" required />
+  <div th:if="${#fields.hasErrors('date')}" th:errors="*{date}" style="color: red;"></div><br>
+
+  <label>Time:</label>
+  <input type="time" th:field="*{time}" required />
+  <div th:if="${#fields.hasErrors('time')}" th:errors="*{time}" style="color: red;"></div><br>
+
+  <button type="submit">Submit Booking</button>
+</form>
+
+<a th:href="@{/userMenu}"><button>Back</button></a>
+</body>
+</html>

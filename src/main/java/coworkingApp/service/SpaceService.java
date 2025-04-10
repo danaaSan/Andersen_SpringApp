@@ -27,8 +27,8 @@ public class SpaceService {
         spaceRepository.deleteById(id);
     }
 
-    public void getAllSpaces() {
-        spaceRepository.findAll().forEach(System.out::println);
+    public List<CoworkingSpace> getAllSpaces() {
+        return spaceRepository.findAll();
     }
 
     public List<CoworkingSpace> getAvailableSpaces() {
