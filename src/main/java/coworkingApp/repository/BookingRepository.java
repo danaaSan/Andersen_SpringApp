@@ -1,10 +1,6 @@
 package coworkingApp.repository;
 
 import coworkingApp.entity.Booking;
-import coworkingApp.entity.user.User;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
