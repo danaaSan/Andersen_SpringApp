@@ -1,18 +1,13 @@
 package coworkingApp.repository;
 
 import coworkingApp.entity.user.User;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-import jakarta.transaction.Transactional;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-import java.util.Optional;
-
 @Repository
-public class UserRepository {
+public interface UserRepository extends JpaRepository<User, Integer> {
 
-    @PersistenceContext
+/*    @PersistenceContext
     private EntityManager entityManager;
 
     @Transactional
@@ -37,6 +32,6 @@ public class UserRepository {
         if (user != null) {
             entityManager.remove(user);
         }
-    }
+    }*/
 }
 

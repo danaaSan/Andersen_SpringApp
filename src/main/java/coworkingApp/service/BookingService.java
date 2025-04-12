@@ -7,6 +7,7 @@ import coworkingApp.repository.BookingRepository;
 import coworkingApp.repository.SpaceRepository;
 import coworkingApp.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,21 +26,29 @@ public class BookingService {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private Booking booking;
 
     @Transactional
-    public void addBooking(int spaceId, int userId, LocalDate date, LocalTime time) {
-        CoworkingSpace space = spaceRepository.findById(spaceId).orElse(null);
-        User user = userRepository.findById(userId).orElse(null);
+    public Booking addBooking(int spaceId, int userId, LocalDate date, LocalTime time) {
+        CoworkingSpace space = spaceRepository.findById(spaceId)
+                .orElseThrow(() -> new IllegalArgumentException("Space with ID " + spaceId + " not found."));
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User with ID " + userId + " not found."));
 
-        if (space != null && user != null && space.isAvailable()) {
-            Booking booking = new Booking(space, user);
-            booking.setDate(date);
-            booking.setTime(time);
-            bookingRepository.save(booking);
-
-            space.setAvailable(false);
-            spaceRepository.save(space);
+        if (!space.isAvailable()) {
+            throw new IllegalStateException("Space with ID " + spaceId + " is not available.");
         }
+
+        Booking booking = new Booking(space, user);
+        booking.setDate(date);
+        booking.setTime(time);
+        bookingRepository.save(booking);
+
+        space.setAvailable(false);
+        spaceRepository.save(space);
+
+        return booking;
     }
 
     @Transactional
@@ -54,10 +63,13 @@ public class BookingService {
         }
     }
 
+    @Cacheable(value = "booking", key = "#root.args[0]")
+    @Transactional(readOnly = true)
     public List<Booking> getBookingsByUser(int userId) {
-        return bookingRepository.findByCustomerId(userId);
+        return bookingRepository.findByCustomer_Id(userId);
     }
 
+    @Transactional(readOnly = true)
     public List<Booking> getAllBookings() {
         return bookingRepository.findAll();
     }

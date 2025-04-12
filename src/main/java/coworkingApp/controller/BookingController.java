@@ -5,18 +5,13 @@ import coworkingApp.entity.Booking;
 import coworkingApp.model.BookingInputModel;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.List;
 
-@Controller
-@RequestMapping("/")
+@RestController
+@RequestMapping("/booking")
 public class BookingController {
 
     @Autowired
@@ -24,86 +19,46 @@ public class BookingController {
 
     // Страница со всеми бронированиями
     @GetMapping("/allBookings")
-    public String listBookings(Model model) {
-        List<Booking> bookings = bookingService.getAllBookings();
-        model.addAttribute("bookings", bookings);
-        return "allBookings";
+    public List<Booking> listBookings() {
+        return bookingService.getAllBookings();
     }
 
-    // Страница для добавления бронирования
-    @GetMapping("/addBooking")
-    public String showAddBookingForm(Model model) {
-        model.addAttribute("bookingInput", new BookingInputModel());
-        return "addBooking";
-    }
 
     // Обработка формы для добавления бронирования
     @PostMapping("/addBooking")
-    public String addBooking(@ModelAttribute("bookingInput") @Valid BookingInputModel bookingInput,
-                             BindingResult result, RedirectAttributes redirectAttributes) {
-        if (result.hasErrors()) {
-            redirectAttributes.addFlashAttribute("errorBooking", "Booking failed. Please check your input.");
-            return "redirect:/addBooking"; // Return the form page if validation fails
-        }
-
+    public ResponseEntity<Booking> addBooking(
+            @Valid @RequestBody BookingInputModel bookingInput
+    ) {
         try {
-            bookingService.addBooking(
+            Booking booking = bookingService.addBooking(
                     bookingInput.getSpaceId(),
                     bookingInput.getUserId(),
                     bookingInput.getDate(),
                     bookingInput.getTime()
             );
-            redirectAttributes.addFlashAttribute("successBooking", "Booking successfully added!");
+            return ResponseEntity.status(HttpStatus.CREATED).body(booking);
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorBooking", "Failed to add booking. Please try again.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
-
-        return "redirect:/addBooking";
     }
 
-    @GetMapping("/selectUser")
-    public String showUserSelectionForm(Model model) {
-        model.addAttribute("userId", 0); // Placeholder for user input
-        return "selectUser";
-    }
-
-    @PostMapping("/selectUser")
-    public String handleUserSelection(@RequestParam("userId") int userId, Model model) {
-        if (userId <= 0) {
-            model.addAttribute("errorUser", "Invalid User ID. Please try again.");
-            return "selectUser";
-        }
-
-        List<Booking> bookings = bookingService.getBookingsByUser(userId);
-        if (bookings.isEmpty()) {
-            model.addAttribute("infoMessage", "No bookings found for this user.");
-        }
-        model.addAttribute("bookings", bookings);
-        model.addAttribute("userId", userId);
-        return "selectUser";
-    }
-
-    // Отмена бронирования
-    @GetMapping("/cancelBooking/{bookingId}")
-    public String cancelBooking(@PathVariable("bookingId") int bookingId, RedirectAttributes redirectAttributes) {
+    @DeleteMapping("/cancelBooking/{bookingId}")
+    public ResponseEntity<Void> cancelBooking(@PathVariable int bookingId) {
         try {
             bookingService.cancelBooking(bookingId);
-            redirectAttributes.addFlashAttribute("successBooking", "cancelled successfully");
+            return ResponseEntity.noContent().build();
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorBooking", "Failed to cancel. Please try again.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
-        return "redirect:/selectUser";
     }
 
-    // Filter bookings by user ID
-    @GetMapping("/userBooking/{bookingId}")
-    public String getBookingsByUser(@RequestParam("userId") int userId, Model model, RedirectAttributes redirectAttributes) {
+    @GetMapping("/userBooking/{userId}")
+    public ResponseEntity<List<Booking>> getBookingsByUser(@PathVariable int userId) {
         List<Booking> bookings = bookingService.getBookingsByUser(userId);
         if (bookings.isEmpty()) {
-            redirectAttributes.addFlashAttribute("infoMessage", "No bookings found for this user.");
+            return ResponseEntity.noContent().build(); // Возвращаем 204 No Content, если нет данных
         }
-        redirectAttributes.addFlashAttribute("bookings", bookings);
-        return "redirect:/selectUser";
+        return ResponseEntity.ok(bookings);
     }
 
 }

@@ -1,17 +1,24 @@
 package coworkingApp.controller;
 
+import coworkingApp.entity.Booking;
+import coworkingApp.entity.CoworkingSpace;
 import coworkingApp.entity.SpaceType;
+import coworkingApp.model.BookingInputModel;
 import coworkingApp.model.SpaceInputModel;
 import coworkingApp.service.SpaceService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-@Controller
+import java.util.List;
+
+@RestController
 @RequestMapping("/")
 public class SpaceController {
 
@@ -19,48 +26,38 @@ public class SpaceController {
     private SpaceService spaceService;
 
     @GetMapping("/allSpaces")
-    public String showAllSpaces(Model model) {
-        model.addAttribute("spaces", spaceService.getAllSpaces());
-        return "allSpaces";
+    public List<CoworkingSpace> listSpaces() {
+        return spaceService.getAllSpaces();
     }
 
-    // форма для добавления
-    @GetMapping("/addSpace")
-    public String showAddForm(Model model) {
-        model.addAttribute("spaceInput", new SpaceInputModel());
-        model.addAttribute("types", SpaceType.values());
-        return "addSpace";
-    }
-
-    // обработка формы
     @PostMapping("/addSpace")
-    public String addSpace(@ModelAttribute("spaceInput") SpaceInputModel spaceInput,
-                           BindingResult result,
-                           Model model, RedirectAttributes redirectAttributes) {
-        if (result.hasErrors()){
-            return "addSpace";
+    public ResponseEntity<CoworkingSpace> addSpace(
+            @Valid @RequestBody SpaceInputModel spaceInput
+    ) {
+        try {
+            CoworkingSpace space = spaceService.addCoworkingSpace(
+                    spaceInput.getType(),
+                    spaceInput.getPrice());
+            return ResponseEntity.status(HttpStatus.CREATED).body(space);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
-        spaceService.addCoworkingSpace(spaceInput.getType(), spaceInput.getPrice());
-        redirectAttributes.addFlashAttribute("success", "Space added successfully");
-        return "redirect:/addSpace";
     }
 
-    // Removing a space by ID
-    @GetMapping("/removeSpace/{spaceId}")
-    public String removeSpace(@PathVariable("spaceId") int spaceId, RedirectAttributes redirectAttributes) {
+    @DeleteMapping("/removeSpace/{spaceId}")
+    public ResponseEntity<Void> deleteSpace(@PathVariable int spaceId) {
         try {
             spaceService.removeSpace(spaceId);
-            redirectAttributes.addFlashAttribute("successSpace", "Space removed successfully");
+            System.out.println("removed");
+            return ResponseEntity.noContent().build();
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorSpace", "Failed to remove space. Please try again.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
-        return "redirect:/allSpaces";
     }
 
     @GetMapping("/availableSpaces")
-    public String showAvailableSpaces(Model model) {
-        model.addAttribute("spaces", spaceService.getAvailableSpaces());
-        return "availableSpaces";
+    public List<CoworkingSpace> showAvailableSpaces() {
+        return spaceService.getAvailableSpaces();
     }
 
 

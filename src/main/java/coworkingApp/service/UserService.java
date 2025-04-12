@@ -17,7 +17,7 @@ public class UserService {
     private UserRepository userRepository;
 
     @Transactional
-    public void addUser(String name, String surname, String email, String userType) {
+    public User addUser(String name, String surname, String email, String userType) {
         User user;
         if ("Admin".equalsIgnoreCase(userType)) {
             user = new Admin(name, surname, email);
@@ -26,9 +26,10 @@ public class UserService {
         } else {
             throw new IllegalArgumentException("Invalid user type: " + userType);
         }
-        userRepository.save(user);
+        return userRepository.save(user);
     }
 
+    @Transactional(readOnly = true)
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
