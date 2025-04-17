@@ -2,7 +2,7 @@ package coworkingApp.service;
 
 import coworkingApp.entity.Booking;
 import coworkingApp.entity.CoworkingSpace;
-import coworkingApp.entity.user.User;
+import coworkingApp.entity.User;
 import coworkingApp.repository.BookingRepository;
 import coworkingApp.repository.SpaceRepository;
 import coworkingApp.repository.UserRepository;
@@ -26,7 +26,7 @@ public class BookingService {
 
     @Autowired
     private UserRepository userRepository;
-    @Autowired
+
     private Booking booking;
 
     @Transactional
@@ -73,4 +73,5 @@ public class BookingService {
     public List<Booking> getAllBookings() {
         return bookingRepository.findAll();
     }
+
 }

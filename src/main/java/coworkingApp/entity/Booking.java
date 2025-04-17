@@ -1,16 +1,13 @@
 package coworkingApp.entity;
 
-import coworkingApp.entity.user.User;
 import jakarta.persistence.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-@Component
 @Entity
 @Table(name = "booking")
 public class Booking {

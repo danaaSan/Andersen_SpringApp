@@ -12,18 +12,18 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("/spaces")
 public class SpaceController {
 
     @Autowired
     private SpaceService spaceService;
 
-    @GetMapping("/allSpaces")
+    @GetMapping
     public List<CoworkingSpace> listSpaces() {
         return spaceService.getAllSpaces();
     }
 
-    @PostMapping("/addSpace")
+    @PostMapping
     public ResponseEntity<CoworkingSpace> addSpace(
             @Valid @RequestBody SpaceInputModel spaceInput
     ) {
@@ -37,7 +37,7 @@ public class SpaceController {
         }
     }
 
-    @DeleteMapping("/removeSpace/{spaceId}")
+    @DeleteMapping("/{spaceId}")
     public ResponseEntity<Void> deleteSpace(@PathVariable int spaceId) {
         try {
             spaceService.removeSpace(spaceId);

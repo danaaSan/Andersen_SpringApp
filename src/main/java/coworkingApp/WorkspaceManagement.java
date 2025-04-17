@@ -3,7 +3,7 @@
 import coworkingApp.entity.*;
 import coworkingApp.entity.user.Admin;
 import coworkingApp.entity.user.Customer;
-import coworkingApp.entity.user.User;
+import coworkingApp.entity.User;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.PersistenceContext;

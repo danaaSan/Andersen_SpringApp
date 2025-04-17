@@ -11,21 +11,20 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/booking")
+@RequestMapping("/bookings")
 public class BookingController {
 
     @Autowired
     private BookingService bookingService;
 
     // Страница со всеми бронированиями
-    @GetMapping("/allBookings")
+    @GetMapping
     public List<Booking> listBookings() {
         return bookingService.getAllBookings();
     }
 
-
     // Обработка формы для добавления бронирования
-    @PostMapping("/addBooking")
+    @PostMapping
     public ResponseEntity<Booking> addBooking(
             @Valid @RequestBody BookingInputModel bookingInput
     ) {
@@ -42,7 +41,7 @@ public class BookingController {
         }
     }
 
-    @DeleteMapping("/cancelBooking/{bookingId}")
+    @DeleteMapping("/{bookingId}")
     public ResponseEntity<Void> cancelBooking(@PathVariable int bookingId) {
         try {
             bookingService.cancelBooking(bookingId);
@@ -52,7 +51,7 @@ public class BookingController {
         }
     }
 
-    @GetMapping("/userBooking/{userId}")
+    @GetMapping("/{userId}")
     public ResponseEntity<List<Booking>> getBookingsByUser(@PathVariable int userId) {
         List<Booking> bookings = bookingService.getBookingsByUser(userId);
         if (bookings.isEmpty()) {

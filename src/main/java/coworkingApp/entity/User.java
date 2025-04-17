@@ -1,13 +1,9 @@
-package coworkingApp.entity.user;
+package coworkingApp.entity;
 
 import jakarta.persistence.*;
-import org.springframework.stereotype.Component;
 
-@Component
 @Entity
 @Table(name = "users")
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE) // Наследование в одной таблице
-@DiscriminatorColumn(name = "role", discriminatorType = DiscriminatorType.STRING)
 public class User {
 
     @Id
@@ -23,6 +19,13 @@ public class User {
 
     @Column(name = "email", nullable = false, unique = true)
     private String email;
+
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
+    private String password;
+
+    private boolean enabled = true;
 
     public User() {}
 
@@ -44,10 +47,32 @@ public class User {
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
 
-    public String getRole() {
-        return this.getClass().getAnnotation(DiscriminatorValue.class).value();
+    public Role getRole() {
+        return role;
+    }
+    public String getRoleAuthorityName() {
+        return role.getAuthorityName();
     }
 
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
 
 
     @Override
@@ -59,6 +84,21 @@ public class User {
                 ", email='" + email + '\'' +
                 ", role='"+getRole()+'\'' +
                 '}';
+    }
+
+    public enum Role{
+        USER("ROLE_USER"),
+        ADMIN("ROLE_ADMIN");
+
+        Role(String authorityName){
+            this.authorityName = authorityName;
+        }
+
+        private final String authorityName;
+
+        public String getAuthorityName() {
+            return authorityName;
+        }
     }
 }
 
