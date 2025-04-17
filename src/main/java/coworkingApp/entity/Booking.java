@@ -31,6 +31,9 @@ public class Booking {
     @Column(name = "booking_time", nullable = false)
     private LocalTime time;
 
+    @Column
+    private double price; // итоговая цена бронирования
+
     public Booking() {}
 
     @Autowired
@@ -67,4 +70,12 @@ public class Booking {
 
     public LocalTime getTime() { return time; }
     public void setTime(LocalTime time) { this.time = time; }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
 }

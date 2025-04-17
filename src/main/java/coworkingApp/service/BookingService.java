@@ -1,5 +1,7 @@
 package coworkingApp.service;
 
+import coworkingApp.designPattern.PriceStrategy;
+import coworkingApp.designPattern.PriceStrategyFactory;
 import coworkingApp.entity.Booking;
 import coworkingApp.entity.CoworkingSpace;
 import coworkingApp.entity.User;
@@ -40,9 +42,12 @@ public class BookingService {
             throw new IllegalStateException("Space with ID " + spaceId + " is not available.");
         }
 
+        PriceStrategy strategy = PriceStrategyFactory.getStrategy(space.getType());
+        double price = strategy.calculatePrice(space, date, time);
         Booking booking = new Booking(space, user);
         booking.setDate(date);
         booking.setTime(time);
+        booking.setPrice(price);
         bookingRepository.save(booking);
 
         space.setAvailable(false);
