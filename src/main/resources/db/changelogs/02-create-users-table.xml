@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
+
+    <changeSet id="02-create-users-table" author="dana_san">
+        <createTable tableName="users" remarks="Пользователи системы">
+            <column name="user_id" type="INTEGER" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="username" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="usersurname" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email" type="VARCHAR(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="role" type="VARCHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="password" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="enabled" type="BOOLEAN" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+    </changeSet>
+
+    <changeSet id="02-add-admin-user" author="dana_san">
+        <insert tableName="users">
+            <column name="username" value="Admin"/>
+            <column name="usersurname" value="Adminov"/>
+            <column name="email" value="admin@example.com"/>
+            <column name="role" value="ADMIN"/>
+            <column name="password" value="$2a$10$DSguWkU949Gr0zD/Y.HQruAHSVwUNrTiiV9AKBbF3VnMdVCCd4kwq"/> <!-- bcrypt hash для "admin123" -->
+            <column name="enabled" value="true"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

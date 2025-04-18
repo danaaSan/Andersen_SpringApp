@@ -7,15 +7,15 @@
     <groupId>org.example</groupId>
     <artifactId>Dana-sAndersonHomeWork</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
 
     <build>
-        <finalName>myapp</finalName> <!-- Это будет имя WAR-файла -->
+        <finalName>coworking-app</finalName> <!-- Это будет имя WAR-файла -->
         <plugins>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-war-plugin</artifactId>
-                <version>3.3.1</version>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>3.4.4</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -46,6 +46,7 @@
             <artifactId>postgresql</artifactId>
             <version>42.7.5</version>
         </dependency>
+
 
         <!--Boot-->
         <dependency>
@@ -83,6 +84,13 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
             <version>3.4.4</version>
+        </dependency>
+
+        <!-- liquibase-core -->
+        <dependency>
+            <groupId>org.liquibase</groupId>
+            <artifactId>liquibase-core</artifactId>
+            <version>4.31.1</version>
         </dependency>
 
     </dependencies>

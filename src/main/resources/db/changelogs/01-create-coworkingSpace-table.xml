@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
+
+    <changeSet id="01-create-coworkingSpace-table" author="dana_san">
+        <createTable tableName="coworking_space">
+            <column name="space_id" type="INTEGER" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="price" type="FLOAT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_available" type="BOOLEAN" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="01-add-coworkingSpace" author="dana_san">
+        <insert tableName="coworking_space">
+            <column name="price" value="100.00"/>
+            <column name="type" value="OPEN"/>
+            <column name="is_available" value="true"/>
+        </insert>
+        <insert tableName="coworking_space">
+            <column name="price" value="150.00"/>
+            <column name="type" value="DEDICATED_DESK"/>
+            <column name="is_available" value="true"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

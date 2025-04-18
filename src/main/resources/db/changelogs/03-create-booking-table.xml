@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
+
+    <changeSet id="03-create-bookings-table" author="dana_san">
+        <createTable tableName="booking" remarks="Бронирования коворкинг-пространств">
+            <column name="booking_id" type="INT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="space_id" type="INT">
+                <constraints nullable="false" foreignKeyName="fk_booking_space"
+                             referencedTableName="coworking_space" referencedColumnNames="space_id"/>
+            </column>
+            <column name="user_id" type="INT">
+                <constraints nullable="false" foreignKeyName="fk_booking_user"
+                             referencedTableName="users" referencedColumnNames="user_id"/>
+            </column>
+            <column name="booking_date" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="booking_time" type="TIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="price" type="FLOAT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>
